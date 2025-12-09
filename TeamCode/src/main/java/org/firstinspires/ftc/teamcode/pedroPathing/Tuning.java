@@ -382,7 +382,7 @@ class ForwardVelocityTuner extends OpMode {
 
 
         if (!end) {
-            if (Math.abs(follower.getPose().getX()) > (DISTANCE + 72)) {
+            if (Math.abs(Math.abs(follower.getPose().getX()) - 72) > (DISTANCE)) {
                 end = true;
                 stopRobot();
             } else {
@@ -489,7 +489,7 @@ class LateralVelocityTuner extends OpMode {
         draw();
 
         if (!end) {
-            if (Math.abs(follower.getPose().getY()) > (DISTANCE + 72)) {
+            if (Math.abs(Math.abs(follower.getPose().getY()) - 72) > DISTANCE) {
                 end = true;
                 stopRobot();
             } else {
@@ -590,7 +590,7 @@ class ForwardZeroPowerAccelerationTuner extends OpMode {
         Vector heading = new Vector(1.0, follower.getPose().getHeading());
         if (!end) {
             if (!stopping) {
-                if (follower.getVelocity().dot(heading) > VELOCITY) {
+                if (Math.abs(follower.getVelocity().dot(heading)) > VELOCITY) {
                     previousVelocity = follower.getVelocity().dot(heading);
                     previousTimeNano = System.nanoTime();
                     stopping = true;
