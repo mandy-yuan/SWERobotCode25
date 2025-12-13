@@ -5,22 +5,35 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
+//import com.pedropathing.util.Timer;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
 public class ScorePreloadsBlue extends OpMode {
+    private DcMotorEx shooterMotor;
+    private DcMotorEx intakeMotor;
+    private Servo spindexerServo;
+
+    private Servo serializerServo;
 
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
 
     private int pathState;
 
-    private final Pose startPose = new Pose(63, 8, Math.toRadians(180)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(63, 90, Math.toRadians(135));
+    private ShooterSubsystem shooterSubsystem;
+    private SpindexerSubsystem spindexerSubsystem;
+
+
+
+    private final Pose startPose = new Pose(56, 8, Math.toRadians(90));
+    private final Pose scorePose = new Pose(45, 115, Math.toRadians(135));
     private Path scorePreload;
     //private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3;
 
@@ -29,13 +42,15 @@ public class ScorePreloadsBlue extends OpMode {
         scorePreload = new Path(new BezierLine(startPose, scorePose));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
 
-    /* Here is an example for Constant Interpolation
-    scorePreload.setConstantInterpolation(startPose.getHeading()); */
+        /* Here is an example for Constant Interpolation
+        scorePreload.setConstantInterpolation(startPose.getHeading()); */
     }
 
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
+                shooterSubsystem.revToRPM(5000);
+                intakeMotor.setPower(-0.2);
                 follower.followPath(scorePreload);
                 setPathState(1);
                 break;
@@ -65,13 +80,29 @@ public class ScorePreloadsBlue extends OpMode {
     }
 
     public void scorePreloads() {
+        for (int i = 0; i < 3; i ++) {
+            actionTimer.resetTimer();
+            spindexerSubsystem.rotateSpindexerShooter();
+            while (actionTimer.getElapsedTimeSeconds() < 0.7) {
 
+            }
+
+            serializerServo.setPosition(0.7);
+            actionTimer.resetTimer();
+            while (actionTimer.getElapsedTimeSeconds() < 1) {
+
+            }
+            actionTimer.resetTimer();
+            serializerServo.setPosition(0.48);
+            while (actionTimer.getElapsedTimeSeconds() < 1) {
+
+            }
+        }
     }
 
     /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
     @Override
     public void loop() {
-
         // These loop the movements of the robot, these must be called continuously in order to work
         follower.update();
         autonomousPathUpdate();
@@ -87,8 +118,17 @@ public class ScorePreloadsBlue extends OpMode {
     /** This method is called once at the init of the OpMode. **/
     @Override
     public void init() {
+        spindexerServo = hardwareMap.get(Servo.class, "spindexer");
+        serializerServo = hardwareMap.get(Servo.class, "serializer");
+        shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter");
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
+        intakeMotor.setPower(-0.2);
+        shooterSubsystem = new ShooterSubsystem(shooterMotor);
+        spindexerSubsystem = new SpindexerSubsystem(spindexerServo);
+
         pathTimer = new Timer();
         opmodeTimer = new Timer();
+        actionTimer = new Timer();
         opmodeTimer.resetTimer();
 
 
@@ -112,5 +152,6 @@ public class ScorePreloadsBlue extends OpMode {
 
     /** We do not use this because everything should automatically disable **/
     @Override
-    public void stop() {}
+    public void stop() {
+    }
 }

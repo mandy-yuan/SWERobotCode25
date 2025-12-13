@@ -10,7 +10,7 @@ public class ShooterSubsystem {
     private final double MotorGearRatio = (double) 1/19.2;
 
     private static final PIDFCoefficients pidfCoefficients = new PIDFCoefficients(
-            3,
+            5,
             0,
             0,
             0

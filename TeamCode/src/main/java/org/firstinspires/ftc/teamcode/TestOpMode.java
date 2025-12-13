@@ -40,6 +40,7 @@ public class TestOpMode extends OpMode {
         //}
 
         if (gamepad2.right_trigger > 0) {
+            //shooterMotor.setPower(1);
             shooterSubsystem.revToRPM(6000);
         }
         else {
