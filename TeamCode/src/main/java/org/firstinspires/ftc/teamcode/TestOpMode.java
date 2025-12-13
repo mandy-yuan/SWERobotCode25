@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 public class TestOpMode extends OpMode {
-    private CRServo spindexerServo;
+    private Servo spindexerServo;
     private DcMotorEx intakeMotor;
     private SpindexerSubsystem spindexerSubsystem;
     private DcMotorEx shooterMotor;
@@ -17,7 +17,7 @@ public class TestOpMode extends OpMode {
 
     private ShooterSubsystem shooterSubsystem;
     public void init() {
-        spindexerServo = hardwareMap.get(CRServo.class, "spindexer");
+        spindexerServo = hardwareMap.get(Servo.class, "spindexer");
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         spindexerSubsystem = new SpindexerSubsystem(spindexerServo);
         shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter");
@@ -29,8 +29,11 @@ public class TestOpMode extends OpMode {
 
     }
     public void loop() {
+        if (gamepad2.yWasPressed()) {
+            spindexerSubsystem.rotateSpindexer();
+        }
         if (gamepad2.xWasPressed()) {
-            spindexerSubsystem.rotateSpindexerIntake();
+            spindexerSubsystem.rotateSpindexerShooter();
         }
         //if (gamepad2.rightBumperWasPressed()) {
         //    spindexerSubsystem.rotateSpindexerIntake();
@@ -42,17 +45,6 @@ public class TestOpMode extends OpMode {
         else {
             shooterSubsystem.stop();
         }
-
-        if (gamepad2.left_stick_y < 0) {
-            spindexerServo.setPower(0.2);
-        }
-        else if (gamepad2.left_stick_y > 0) {
-            spindexerServo.setPower(-0.2);
-        }
-        else {
-            spindexerServo.setPower(0);
-        }
-
 
         if (gamepad2.a) {
             serializerServo.setPosition(0.7);

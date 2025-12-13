@@ -9,42 +9,51 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.sun.tools.javac.tree.DCTree;
 
 public class SpindexerSubsystem {
-    private final CRServo spindexerServo;
+    private final Servo spindexerServo;
     Timer timer = new Timer();
 
-    private int intakeState;
+    private int spindexerState;
+    private int spindexerShooterState;
     private double offset = 0.1;
 
-    public SpindexerSubsystem(CRServo spindexerServo) {
+    public SpindexerSubsystem(Servo spindexerServo) {
         this.spindexerServo = spindexerServo;
-        intakeState = 0;
+        spindexerServo.setPosition(0);
+        spindexerState = 0;
+        spindexerShooterState = 0;
     }
 
-    public void rotateSpindexerIntake() {
-
-        /*spindexerServo.setPower(0.6);
-        timer.resetTimer();
-        while (timer.s) {
-
-        }
-        spindexerServo.setPower(0.5);*/
-
-    }
-
-    /*public void rotateSpindexerShooter() {
-        switch (intakeState) {
+    public void rotateSpindexer() {
+        switch (spindexerState) {
             case 0:
-                spindexerServo.(0.15);
-                intakeState = (intakeState + 1) % 3;
+                spindexerServo.setPosition(0.24);
+                spindexerState = 1;
                 break;
             case 1:
-                spindexerServo.setPosition(0.51 + offset);
-                intakeState = (intakeState + 1) % 3;
+                spindexerServo.setPosition(0.64);
+                spindexerState = 2;
                 break;
             case 2:
-                spindexerServo.setPosition(0.87 + offset);
-                intakeState = (intakeState + 1) % 3;
+                spindexerServo.setPosition(1.04);
+                spindexerState = 0;
                 break;
         }
-    }*/
+    }
+
+    public void rotateSpindexerShooter() {
+        switch (spindexerShooterState) {
+            case 0:
+                spindexerServo.setPosition(0.05);
+                spindexerShooterState = 1;
+                break;
+            case 1:
+                spindexerServo.setPosition(0.45);
+                spindexerShooterState = 2;
+                break;
+            case 2:
+                spindexerServo.setPosition(0.85);
+                spindexerShooterState = 0;
+                break;
+        }
+    }
 }

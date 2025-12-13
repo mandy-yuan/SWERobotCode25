@@ -65,9 +65,9 @@ public class FieldCentricTeleOp extends OpMode {
 
             //This is the normal version to use in the TeleOp
             if (!slowMode) follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x,
-                    -gamepad1.right_stick_x,
+                    -gamepad1.left_stick_y * 0.8,
+                    -gamepad1.left_stick_x * 0.8,
+                    -gamepad1.right_stick_x * 0.8,
                     false // Robot Centric
             );
 
