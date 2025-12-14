@@ -33,7 +33,7 @@ public class ScorePreloadsBlue extends OpMode {
 
 
     private final Pose startPose = new Pose(56, 8, Math.toRadians(90));
-    private final Pose scorePose = new Pose(45, 115, Math.toRadians(135));
+    private final Pose scorePose = new Pose(45, 110, Math.toRadians(135));
     private Path scorePreload;
     //private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3;
 
@@ -47,10 +47,11 @@ public class ScorePreloadsBlue extends OpMode {
     }
 
     public void autonomousPathUpdate() {
+        intakeMotor.setPower(-0.2);
         switch (pathState) {
             case 0:
                 shooterSubsystem.revToRPM(5000);
-                intakeMotor.setPower(-0.2);
+
                 follower.followPath(scorePreload);
                 setPathState(1);
                 break;
@@ -83,7 +84,7 @@ public class ScorePreloadsBlue extends OpMode {
         for (int i = 0; i < 3; i ++) {
             actionTimer.resetTimer();
             spindexerSubsystem.rotateSpindexerShooter();
-            while (actionTimer.getElapsedTimeSeconds() < 0.7) {
+            while (actionTimer.getElapsedTimeSeconds() < 1) {
 
             }
 
