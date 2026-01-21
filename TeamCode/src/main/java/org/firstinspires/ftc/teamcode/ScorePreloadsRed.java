@@ -4,18 +4,16 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
-import com.pedropathing.paths.PathChain;
-//import com.pedropathing.util.Timer;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
-public class ScorePreloadsBlue extends OpMode {
+public class ScorePreloadsRed extends OpMode {
     private DcMotorEx shooterMotor;
     private DcMotorEx intakeMotor;
     private Servo spindexerServo;
@@ -32,10 +30,9 @@ public class ScorePreloadsBlue extends OpMode {
 
 
 
-    private final Pose startPose = new Pose(56, 8, Math.toRadians(90));
-    private final Pose scorePose = new Pose(50, 90, Math.toRadians(135));
-
-    private final Pose endPose = new Pose(50, 55, Math.toRadians(180));
+    private final Pose startPose = new Pose(86, 8, Math.toRadians(90));
+    private final Pose scorePose = new Pose(105, 115, Math.toRadians(45));
+    private final Pose endPose = new Pose(84, 55, Math.toRadians(0));
     private Path scorePreload;
     private Path leaveShootingZone;
     //private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3;
@@ -47,6 +44,7 @@ public class ScorePreloadsBlue extends OpMode {
 
         leaveShootingZone = new Path(new BezierLine(scorePose, endPose));
         leaveShootingZone.setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading());
+
         /* Here is an example for Constant Interpolation
         scorePreload.setConstantInterpolation(startPose.getHeading()); */
     }
@@ -54,7 +52,7 @@ public class ScorePreloadsBlue extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                shooterSubsystem.revToRPM(3000);
+                shooterSubsystem.revToRPM(2000);
                 intakeMotor.setPower(-0.2);
                 follower.followPath(scorePreload);
                 setPathState(1);

@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
-public class ScorePreloadsBlue extends OpMode {
+public class TaxiRed extends OpMode {
     private DcMotorEx shooterMotor;
     private DcMotorEx intakeMotor;
     private Servo spindexerServo;
@@ -32,21 +32,18 @@ public class ScorePreloadsBlue extends OpMode {
 
 
 
-    private final Pose startPose = new Pose(56, 8, Math.toRadians(90));
-    private final Pose scorePose = new Pose(50, 90, Math.toRadians(135));
-
-    private final Pose endPose = new Pose(50, 55, Math.toRadians(180));
-    private Path scorePreload;
-    private Path leaveShootingZone;
+//    private final Pose startPose = new Pose(84, 136, Math.toRadians(90));
+//    private final Pose endPose = new Pose(84, 55, Math.toRadians(0));
+    private final Pose startPose = new Pose(84, 8, Math.toRadians(0));
+    private final Pose endPose = new Pose(84, 35, Math.toRadians(0));
+    private Path taxiPath;
     //private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3;
 
     public void buildPaths() {
         /* This is our scorePreload path. We are using a BezierLine, which is a straight line. */
-        scorePreload = new Path(new BezierLine(startPose, scorePose));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        taxiPath = new Path(new BezierLine(startPose, endPose));
+        taxiPath.setLinearHeadingInterpolation(startPose.getHeading(), endPose.getHeading());
 
-        leaveShootingZone = new Path(new BezierLine(scorePose, endPose));
-        leaveShootingZone.setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading());
         /* Here is an example for Constant Interpolation
         scorePreload.setConstantInterpolation(startPose.getHeading()); */
     }
@@ -54,29 +51,10 @@ public class ScorePreloadsBlue extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                shooterSubsystem.revToRPM(3000);
-                intakeMotor.setPower(-0.2);
-                follower.followPath(scorePreload);
+                follower.followPath(taxiPath);
                 setPathState(1);
                 break;
             case 1:
-
-            /* You could check for
-            - Follower State: "if(!follower.isBusy()) {}"
-            - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
-            - Robot Position: "if(follower.getPose().getX() > 36) {}"
-            */
-
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Preload */
-                    scorePreloads();
-
-                    setPathState(2);
-                }
-                break;
-            case 2:
-                follower.followPath(leaveShootingZone);
                 break;
         }
     }
@@ -153,7 +131,6 @@ public class ScorePreloadsBlue extends OpMode {
      * It runs all the setup actions, including building paths and starting the path system **/
     @Override
     public void start() {
-        intakeMotor.setPower(-0.2);
         opmodeTimer.resetTimer();
         setPathState(0);
     }

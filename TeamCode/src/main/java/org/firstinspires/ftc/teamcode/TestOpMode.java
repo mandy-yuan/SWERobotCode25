@@ -6,6 +6,19 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.HeadingInterpolator;
+import com.pedropathing.paths.Path;
+import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @TeleOp
 public class TestOpMode extends OpMode {
@@ -29,13 +42,13 @@ public class TestOpMode extends OpMode {
     }
     public void loop() {
         if (gamepad2.yWasPressed()) {
-            spindexerSubsystem.rotateSpindexer();
-        }
-        if (gamepad2.xWasPressed()) {
             spindexerSubsystem.rotateSpindexerShooter();
         }
+        if (gamepad2.xWasPressed()) {
+            spindexerSubsystem.rotateSpindexerIntake();
+        }
         //if (gamepad2.rightBumperWasPressed()) {
-        //    spindexerSubsystem.rotateSpindexerIntake();
+        //    spindexerSubsystem.rotateSpindexerInt7ake();
         //}
 
         if (gamepad2.right_trigger > 0) {

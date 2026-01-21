@@ -17,9 +17,10 @@ public class ShooterSubsystem {
     );
     public ShooterSubsystem(DcMotorEx shooterMotor) {
         this.shooterMotor = shooterMotor;
-        this.shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.shooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+        shooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //this.shooterMotor.setMode(Dc);
     }
 
@@ -28,6 +29,7 @@ public class ShooterSubsystem {
     }
     public void stop() {
         this.shooterMotor.setVelocity(0);
+        //try set voltage
     }
 
     public double rpmToTicksPerSecond(double rpm) {
