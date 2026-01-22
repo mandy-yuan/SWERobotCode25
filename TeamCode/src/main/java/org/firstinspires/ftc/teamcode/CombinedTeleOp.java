@@ -59,7 +59,9 @@ public class CombinedTeleOp extends OpMode {
     private Servo spindexerServo;
     private DcMotorEx intakeMotor;
     private SpindexerSubsystem spindexerSubsystem;
-    private DcMotorEx shooterMotor;
+    private DcMotorEx shooterMotor1;
+
+    private DcMotorEx shooterMotor2;
     private Servo serializerServo;
 
     private static final int SPINDEXER_TICKS_PER_REVOLUTION = 1120;
@@ -81,8 +83,9 @@ public class CombinedTeleOp extends OpMode {
         spindexerServo = hardwareMap.get(Servo.class, "spindexer");
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         spindexerSubsystem = new SpindexerSubsystem(spindexerServo);
-        shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter");
-        shooterSubsystem = new ShooterSubsystem(shooterMotor);
+        shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooter1");
+        shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooter2");
+        shooterSubsystem = new ShooterSubsystem(shooterMotor1, shooterMotor2);
         serializerServo = hardwareMap.get(Servo.class, "serializer");
     }
 
@@ -162,13 +165,6 @@ public class CombinedTeleOp extends OpMode {
         telemetryM.debug("automatedDrive", automatedDrive);
 
 
-        if (gamepad2.yWasPressed()) {
-            spindexerSubsystem.rotateSpindexerShooter();
-        }
-        if (gamepad2.xWasPressed()) {
-            spindexerSubsystem.rotateSpindexerIntake();
-        }
-
 
         if (gamepad2.b) {
             intakeMotor.setPower(-0.65);
@@ -179,6 +175,12 @@ public class CombinedTeleOp extends OpMode {
             intakeMotor.setPower(0);
         }
 
+        if(gamepad2.right_trigger>0){
+            shooterSubsystem.revToRPM(6000);
+        }
+        else{
+            shooterSubsystem.stop();
+        }
 
 
     }
