@@ -54,7 +54,7 @@ public class CombinedTeleOp extends OpMode {
         shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooter2");
         shooterSubsystem = new ShooterSubsystem(shooterMotor1, shooterMotor2);
 
-        ElapsedTime timer = new ElapsedTime();
+        timer = new ElapsedTime();
         double runtime = 1.5;
     }
 
@@ -145,29 +145,21 @@ public class CombinedTeleOp extends OpMode {
         }
 
         //shooter buttons, 25% power increment at 1.5 seconds
-        if(gamepad2.x){
+        if(gamepad2.x && timer.seconds()<runtime){
             timer.reset();
-            if(timer.seconds()<runtime){
-                shooterSubsystem.setPowerTo(0.1);
-            }
+            shooterSubsystem.setPowerTo(0.1);
         }
-        else if(gamepad2.y){
+        else if(gamepad2.y && timer.seconds()<runtime){
             timer.reset();
-            if(timer.seconds()<runtime){
-                shooterSubsystem.setPowerTo(0.75);
-            }
+            shooterSubsystem.setPowerTo(0.75);
         }
-        else if(gamepad2.b){
+        else if(gamepad2.b && timer.seconds()<runtime){
             timer.reset();
-            if(timer.seconds()<runtime){
-                shooterSubsystem.setPowerTo(0.5);
-            }
+            shooterSubsystem.setPowerTo(0.5);
         }
-        else if(gamepad2.a){
+        else if(gamepad2.a && timer.seconds()<runtime){
             timer.reset();
-            if(timer.seconds()<runtime){
-                shooterSubsystem.setPowerTo(0.25);
-            }
+            shooterSubsystem.setPowerTo(0.25);
         }
 
         else if(gamepad2.left_trigger>0){
