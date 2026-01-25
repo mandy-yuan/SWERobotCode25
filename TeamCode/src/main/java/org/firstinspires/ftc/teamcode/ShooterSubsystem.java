@@ -9,7 +9,6 @@ public class ShooterSubsystem {
     private final DcMotorEx shooterMotor2;
     private final double MotorTicksPerRev = 28;
     private final double MotorGearRatio = (double) 1/19.2;
-
     private static final PIDFCoefficients pidfCoefficients = new PIDFCoefficients(
             5,
             0,
@@ -19,13 +18,13 @@ public class ShooterSubsystem {
     public ShooterSubsystem (DcMotorEx shooterMotor1, DcMotorEx shooterMotor2) {
         this.shooterMotor1 = shooterMotor1;
         this.shooterMotor2 = shooterMotor2;
-//        shooterMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        shooterMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//
-//        shooterMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        shooterMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        shooterMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //this.shooterMotor.setMode(Dc);
     }
 
@@ -46,4 +45,5 @@ public class ShooterSubsystem {
     public double rpmToTicksPerSecond(double rpm) {
         return rpm * MotorTicksPerRev / MotorGearRatio / 60;
     }
+
 }
