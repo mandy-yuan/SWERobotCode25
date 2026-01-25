@@ -115,13 +115,13 @@ public class CombinedTeleOp extends OpMode {
                     -gamepad1.right_stick_x * 0.8,
                     false // Robot Centric
             );
-            //SlowMode on
-            else follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y * slowModeMultiplier,
-                    -gamepad1.left_stick_x * slowModeMultiplier,
-                    -gamepad1.right_stick_x * slowModeMultiplier,
-                    false // Robot Centric
-            );
+//            //SlowMode on
+//            else follower.setTeleOpDrive(
+//                    -gamepad1.left_stick_y * slowModeMultiplier,
+//                    -gamepad1.left_stick_x * slowModeMultiplier,
+//                    -gamepad1.right_stick_x * slowModeMultiplier,
+//                    false // Robot Centric
+//            );
         }
 
 
@@ -177,7 +177,7 @@ public class CombinedTeleOp extends OpMode {
 //        }
 
 //        //Slow Mode
-//        if (gamepad1.rightBumperWasPressed()) {
+//        if (gamepad1.dpadDownWasPressed()) {
 //            slowMode = !slowMode;
 //        }
 //
