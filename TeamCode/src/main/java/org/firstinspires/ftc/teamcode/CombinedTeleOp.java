@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
@@ -31,7 +30,6 @@ public class CombinedTeleOp extends OpMode {
     private double slowModeMultiplier = 0.5;
     private DcMotorEx intakeMotor;
     private DcMotorEx shooterMotor1;
-    private DcMotorEx shooterMotor2;
     private ShooterSubsystem shooterSubsystem;
     private ElapsedTime timer;
 
@@ -58,7 +56,7 @@ public class CombinedTeleOp extends OpMode {
                 .build();
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooter1");
-        shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooter2");
+        DcMotorEx shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooter2");
         shooterSubsystem = new ShooterSubsystem(shooterMotor1, shooterMotor2);
 
         timer = new ElapsedTime();
