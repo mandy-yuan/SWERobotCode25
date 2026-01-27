@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -20,7 +21,7 @@ public class ScorePreloadsBlue extends OpMode {
     private DcMotorEx intakeMotor;
 
     private Follower follower;
-    private Timer pathTimer, actionTimer, opmodeTimer;
+    private ElapsedTime pathTimer, actionTimer, opmodeTimer;
 
     private int pathState;
 
@@ -60,7 +61,7 @@ public class ScorePreloadsBlue extends OpMode {
                 /*  will wait until the robot position is close (1 inch away) from the scorePose's position */
         if(!follower.isBusy()) {
             /* Score Preload */
-            if(actionTimer.getElapsedTimeSeconds()<2){
+            if(actionTimer.seconds()<2){
                 intakeMotor.setPower(-0.5);
             }
             follower.followPath(leaveShootingZone);
@@ -71,7 +72,7 @@ public class ScorePreloadsBlue extends OpMode {
     /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
     public void setPathState(int pState) {
         pathState = pState;
-        pathTimer.resetTimer();
+        pathTimer.reset();
     }
 
 
@@ -98,11 +99,10 @@ public class ScorePreloadsBlue extends OpMode {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         shooterSubsystem = new ShooterSubsystem(shooterMotor1, shooterMotor2);
 
-        pathTimer = new Timer();
-        opmodeTimer = new Timer();
-        actionTimer = new Timer();
-        opmodeTimer.resetTimer();
-
+        pathTimer = new ElapsedTime();
+        opmodeTimer =  new ElapsedTime();
+        actionTimer =  new ElapsedTime();
+        opmodeTimer.reset();
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
@@ -118,8 +118,13 @@ public class ScorePreloadsBlue extends OpMode {
      * It runs all the setup actions, including building paths and starting the path system **/
     @Override
     public void start() {
-        intakeMotor.setPower(-0.2);
-        opmodeTimer.resetTimer();
+        actionTimer.reset();
+        while(actionTimer.seconds()<3){
+            shooterSubsystem.setPowerTo(0.75);
+            while(actionTimer.seconds()>1.5 && actionTimer.seconds()<1.8){intakeMotor.setPower(-0.65);}
+            while(actionTimer.seconds()>2 && actionTimer.seconds()<2.2){intakeMotor.setPower(-0.65);}
+            while(actionTimer.seconds()>2.4 && actionTimer.seconds()<2.7){intakeMotor.setPower(-0.65);}
+        }
         setPathState(0);
     }
 
