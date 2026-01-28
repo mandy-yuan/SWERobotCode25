@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
@@ -21,7 +20,7 @@ public class ScorePreloadsBlue extends OpMode {
     private DcMotorEx intakeMotor;
 
     private Follower follower;
-    private ElapsedTime pathTimer, actionTimer, opmodeTimer;
+    private Timer pathTimer, actionTimer, opmodeTimer;
 
     private int pathState;
 
@@ -30,7 +29,7 @@ public class ScorePreloadsBlue extends OpMode {
 
 //put intake next to wall
     private final Pose startPose = new Pose(56, 8, Math.toRadians(90));
-    private final Pose scorePose = new Pose(50, 90, Math.toRadians(135));
+    private final Pose scorePose = new Pose(72,82,Math.toRadians(135));
     private final Pose endPose = new Pose(50, 55, Math.toRadians(180));
     private Path scorePreload;
     private Path leaveShootingZone;
@@ -47,32 +46,34 @@ public class ScorePreloadsBlue extends OpMode {
         /* Here is an example for Constant Interpolation
         scorePreload.setConstantInterpolation(startPose.getHeading()); */
     }
-
-    public void autonomousPathUpdate() {
-                shooterSubsystem.revToRPM(2000);
-                follower.followPath(scorePreload);
-                setPathState(1);
-            /* You could check for
-            - Follower State: "if(!follower.isBusy()) {}"
-            - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
-            - Robot Position: "if(follower.getPose().getX() > 36) {}"
-            */
-
-                /*  will wait until the robot position is close (1 inch away) from the scorePose's position */
-        if(!follower.isBusy()) {
-            /* Score Preload */
-            if(actionTimer.seconds()<2){
-                intakeMotor.setPower(-0.5);
-            }
-            follower.followPath(leaveShootingZone);
+    public void scorePreloads() {
+        actionTimer.resetTimer();
+        shooterSubsystem.setPowerTo(1);
+        while (actionTimer.getElapsedTimeSeconds() < 2) {
 
         }
+        for(int i=0; i<3;i++){
+            intakeMotor.setPower(0.8);
+            while (actionTimer.getElapsedTimeSeconds() < 0.1) {
+
+            }
+        }
+
+    }
+    public void autonomousPathUpdate() {
+        shooterSubsystem.setPowerTo(0.8);
+        follower.followPath(scorePreload);
+        if(!follower.isBusy()) {
+            scorePreloads();
+        }
+        follower.followPath(leaveShootingZone);
+
     }
 
     /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
     public void setPathState(int pState) {
         pathState = pState;
-        pathTimer.reset();
+        pathTimer.resetTimer();
     }
 
 
@@ -99,10 +100,10 @@ public class ScorePreloadsBlue extends OpMode {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         shooterSubsystem = new ShooterSubsystem(shooterMotor1, shooterMotor2);
 
-        pathTimer = new ElapsedTime();
-        opmodeTimer =  new ElapsedTime();
-        actionTimer =  new ElapsedTime();
-        opmodeTimer.reset();
+        pathTimer = new Timer();
+        opmodeTimer =  new Timer();
+        actionTimer =  new Timer();
+        opmodeTimer.resetTimer();
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
@@ -118,14 +119,7 @@ public class ScorePreloadsBlue extends OpMode {
      * It runs all the setup actions, including building paths and starting the path system **/
     @Override
     public void start() {
-        actionTimer.reset();
-        while(actionTimer.seconds()<3){
-            shooterSubsystem.setPowerTo(0.75);
-            while(actionTimer.seconds()>1.5 && actionTimer.seconds()<1.8){intakeMotor.setPower(-0.65);}
-            while(actionTimer.seconds()>2 && actionTimer.seconds()<2.2){intakeMotor.setPower(-0.65);}
-            while(actionTimer.seconds()>2.4 && actionTimer.seconds()<2.7){intakeMotor.setPower(-0.65);}
-        }
-        setPathState(0);
+        opmodeTimer.resetTimer();
     }
 
     /** We do not use this because everything should automatically disable **/

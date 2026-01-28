@@ -33,7 +33,7 @@ public class ScorePreloadsRed extends OpMode {
 
 
     private final Pose startPose = new Pose(86, 8, Math.toRadians(90));
-    private final Pose scorePose = new Pose(105, 115, Math.toRadians(45));
+    private final Pose scorePose = new Pose(72,82,Math.toRadians(45));
     private final Pose endPose = new Pose(84, 55, Math.toRadians(0));
     private Path scorePreload;
     private Path leaveShootingZone;
@@ -53,7 +53,6 @@ public class ScorePreloadsRed extends OpMode {
 
     public void autonomousPathUpdate() {
         shooterSubsystem.setPowerTo(0.8);
-        intakeMotor.setPower(-0.2);
         follower.followPath(scorePreload);
         if(!follower.isBusy()) {
             scorePreloads();
@@ -75,6 +74,7 @@ public class ScorePreloadsRed extends OpMode {
 
                 }
             }
+
     }
 
     /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
