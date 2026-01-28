@@ -25,7 +25,7 @@ public class ScorePreloadsRed extends OpMode {
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
 
-    private int pathState;
+    private int pathState=0;
 
     private ShooterSubsystem shooterSubsystem;
     private SpindexerSubsystem spindexerSubsystem;
@@ -33,7 +33,7 @@ public class ScorePreloadsRed extends OpMode {
 
 
     private final Pose startPose = new Pose(86, 8, Math.toRadians(90));
-    private final Pose scorePose = new Pose(72,82,Math.toRadians(45));
+    private final Pose scorePose = new Pose(72,82,Math.toRadians(225));
     private final Pose endPose = new Pose(84, 55, Math.toRadians(0));
     private Path scorePreload;
     private Path leaveShootingZone;
@@ -52,29 +52,45 @@ public class ScorePreloadsRed extends OpMode {
     }
 
     public void autonomousPathUpdate() {
-        shooterSubsystem.setPowerTo(0.8);
-        follower.followPath(scorePreload);
-        if(!follower.isBusy()) {
-            scorePreloads();
-        }
-        follower.followPath(leaveShootingZone);
     }
 
     /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
 
     public void scorePreloads() {
-            actionTimer.resetTimer();
-            shooterSubsystem.setPowerTo(1);
-            while (actionTimer.getElapsedTimeSeconds() < 2) {
+        switch (pathState) {
+            case 0:
+                shooterSubsystem.setPowerTo(0.8);
+                follower.followPath(scorePreload);
+                pathState = 1;
+                break;
 
-            }
-            for(int i=0; i<3;i++){
-                intakeMotor.setPower(0.8);
-                while (actionTimer.getElapsedTimeSeconds() < 0.1) {
-
+            case 1:
+                if (!follower.isBusy()) {
+                    actionTimer.resetTimer();
+                    pathState = 2;
                 }
-            }
+                break;
 
+            case 2:
+                shooterSubsystem.setPowerTo(0.8);
+                if (actionTimer.getElapsedTimeSeconds() > 1) {
+                    actionTimer.resetTimer();
+                    pathState = 3;
+                }
+                break;
+
+            case 3:
+                double time = actionTimer.getElapsedTimeSeconds();
+                if (time<0.1 || (0.2<time && time<0.3) || (0.4<time &&time<0.5)){
+                    intakeMotor.setPower(0.6);
+                }
+                if(time>0.6){
+                    intakeMotor.setPower(0);
+                    follower.followPath(leaveShootingZone);
+                    pathState = 4;
+                }
+                break;
+        }
     }
 
     /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
@@ -82,7 +98,7 @@ public class ScorePreloadsRed extends OpMode {
     public void loop() {
         // These loop the movements of the robot, these must be called continuously in order to work
         follower.update();
-        autonomousPathUpdate();
+        scorePreloads();
 
         // Feedback to Driver Hub for debugging
         telemetry.addData("path state", pathState);
@@ -121,7 +137,6 @@ public class ScorePreloadsRed extends OpMode {
      * It runs all the setup actions, including building paths and starting the path system **/
     @Override
     public void start() {
-        intakeMotor.setPower(-0.2);
         opmodeTimer.resetTimer();
     }
 

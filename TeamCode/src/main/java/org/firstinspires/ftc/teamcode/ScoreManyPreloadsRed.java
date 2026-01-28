@@ -4,20 +4,23 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
-import com.pedropathing.paths.PathChain;
-//import com.pedropathing.util.Timer;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
 @Autonomous
-public class TaxiRed extends OpMode {
+public class ScoreManyPreloadsRed extends OpMode {
     private DcMotorEx shooterMotor1;
 
     private DcMotorEx shooterMotor2;
+    private DcMotorEx intakeMotor;
+    private Servo spindexerServo;
+
+    private Servo serializerServo;
 
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
@@ -27,41 +30,61 @@ public class TaxiRed extends OpMode {
     private ShooterSubsystem shooterSubsystem;
     private SpindexerSubsystem spindexerSubsystem;
 
-//fix taxi blue
 
-//    private final Pose startPose = new Pose(84, 136, Math.toRadians(90));
-//    private final Pose endPose = new Pose(84, 55, Math.toRadians(0));
-    private final Pose startPose = new Pose(84, 8, Math.toRadians(0));
-    private final Pose endPose = new Pose(84, 35, Math.toRadians(0));
-    private Path taxiPath;
+
+    private final Pose startPose = new Pose(86, 8, Math.toRadians(90));
+    private final Pose scorePose = new Pose(72,82,Math.toRadians(45));
+    private final Pose prepareIntakePose1 = new Pose(56,38,Math.toRadians(180));
+    private final Pose intakePose1 = new Pose(22,36,Math.toRadians(180));
+    private final Pose endPose = new Pose(84, 55, Math.toRadians(0));
+    private Path scorePreload;
+    private Path pickUpPosition1;
+    private Path pickup1;
     //private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3;
 
     public void buildPaths() {
         /* This is our scorePreload path. We are using a BezierLine, which is a straight line. */
-        taxiPath = new Path(new BezierLine(startPose, endPose));
-        taxiPath.setLinearHeadingInterpolation(startPose.getHeading(), endPose.getHeading());
+        scorePreload = new Path(new BezierLine(startPose, scorePose));
+        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+
+        pickUpPosition1 = new Path(new BezierLine(scorePose, prepareIntakePose1));
+        pickUpPosition1.setLinearHeadingInterpolation(scorePose.getHeading(), prepareIntakePose1.getHeading());
+
+        pickup1 = new Path(new BezierLine(prepareIntakePose1, intakePose1));
+        pickup1.setLinearHeadingInterpolation(prepareIntakePose1.getHeading(), intakePose1.getHeading());
+
 
         /* Here is an example for Constant Interpolation
         scorePreload.setConstantInterpolation(startPose.getHeading()); */
     }
 
     public void autonomousPathUpdate() {
-        switch (pathState) {
-            case 0:
-                follower.followPath(taxiPath);
-                setPathState(1);
-                break;
-            case 1:
-                break;
+        shooterSubsystem.setPowerTo(0.8);
+        follower.followPath(scorePreload);
+        if(!follower.isBusy()) {
+            scorePreloads();
+        }
+        follower.followPath(pickUpPosition1);
+        if(!follower.isBusy()) {
+            follower.followPath(pickup1);
         }
     }
 
     /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
-    public void setPathState(int pState) {
-        pathState = pState;
-        pathTimer.resetTimer();
-    }
 
+    public void scorePreloads() {
+        actionTimer.resetTimer();
+        shooterSubsystem.setPowerTo(1);
+        while (actionTimer.getElapsedTimeSeconds() < 2) {
+
+        }
+        for(int i=0; i<3;i++){
+            intakeMotor.setPower(0.8);
+            while (actionTimer.getElapsedTimeSeconds() < 0.1) {
+
+            }
+        }
+    }
 
     /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
     @Override
@@ -81,8 +104,10 @@ public class TaxiRed extends OpMode {
     /** This method is called once at the init of the OpMode. **/
     @Override
     public void init() {
+        serializerServo = hardwareMap.get(Servo.class, "serializer");
         shooterMotor1 = hardwareMap.get(DcMotorEx.class, "shooter1");
         shooterMotor2 = hardwareMap.get(DcMotorEx.class, "shooter2");
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         shooterSubsystem = new ShooterSubsystem(shooterMotor1, shooterMotor2);
 
         pathTimer = new Timer();
@@ -105,8 +130,8 @@ public class TaxiRed extends OpMode {
      * It runs all the setup actions, including building paths and starting the path system **/
     @Override
     public void start() {
+        intakeMotor.setPower(-0.2);
         opmodeTimer.resetTimer();
-        setPathState(0);
     }
 
     /** We do not use this because everything should automatically disable **/

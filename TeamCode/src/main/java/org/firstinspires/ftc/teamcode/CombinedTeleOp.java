@@ -35,7 +35,7 @@ public class CombinedTeleOp extends OpMode {
 
     private int shooterState = 0;
     private double shooterMotorPower;
-    private double intakeMotorPower = -0.8;
+    private double intakeMotorPower = -0.65;
 
     private final Pose farBlue = new Pose(70,25,120);
     private final Pose farRed = new Pose(72,25,60);
@@ -77,10 +77,10 @@ public class CombinedTeleOp extends OpMode {
 
         //Driver controls
         if (gamepad1.leftBumperWasPressed()) {
-            follower.setPose(new Pose(72, 72, 0));
+            follower.setPose(new Pose(follower.getPose().getX(), follower.getPose().getY(), 0));
         }
         if (gamepad1.left_trigger > 0) {
-            follower.setPose(new Pose(72, 72, 180));
+            follower.setPose(new Pose(follower.getPose().getX(), follower.getPose().getY(), 180));
         }
 
         //Shooting setpoints (far/small triangle and close/large triangle)
@@ -88,15 +88,15 @@ public class CombinedTeleOp extends OpMode {
             automatedDrive = true;
             driveToNearBlue();
         }
-        else if (gamepad2.yWasPressed()&&!automatedDrive) {
+        else if (gamepad1.yWasPressed()&&!automatedDrive) {
             automatedDrive = true;
             driveToNearRed();
         }
-        else if (gamepad2.right_trigger>0&&!automatedDrive){
+        else if (gamepad1.right_trigger>0&&!automatedDrive){
             automatedDrive = true;
             driveToFarBlue();
         }
-        else if (gamepad2.right_bumper&&!automatedDrive){
+        else if (gamepad1.right_bumper&&!automatedDrive){
             automatedDrive = true;
             driveToFarRed();
         }
@@ -126,62 +126,30 @@ public class CombinedTeleOp extends OpMode {
 
 
         //Operator controls
+        //manual shooter
+        if(gamepad2.right_trigger>0){
+            shooterSubsystem.setPowerTo(1);
+        }
+        else{
+            shooterSubsystem.setPowerTo(0);
+        }
+
 
         //Intake/unintake
         if (gamepad2.left_bumper) {
             intakeMotor.setPower(intakeMotorPower);
         } else if(gamepad2.right_bumper){
-            intakeMotor.setPower(0.4);
+            intakeMotor.setPower(0.6);
         }
         else {
             intakeMotor.setPower(0);
         }
 
-//      ugly
 
-//        if(gamepad2.aWasPressed()){
-//            timer.reset();
-//            while(timer.seconds()<3){
-//                shooterSubsystem.setPowerTo(1);
-//                while(timer.seconds()>1.5 && timer.seconds()<1.8){intakeMotor.setPower(intakeMotorPower);}
-//                while(timer.seconds()>2 && timer.seconds()<2.2){intakeMotor.setPower(intakeMotorPower);}
-//                while(timer.seconds()>2.4 && timer.seconds()<2.7){intakeMotor.setPower(intakeMotorPower);}
-//            }
-//        }
-//        else if(gamepad2.yWasPressed()){
-//            timer.reset();
-//            while(timer.seconds()<3){
-//                shooterSubsystem.setPowerTo(0.75);
-//                while(timer.seconds()>1.5 && timer.seconds()<1.8){intakeMotor.setPower(intakeMotorPower);}
-//                while(timer.seconds()>2 && timer.seconds()<2.2){intakeMotor.setPower(intakeMotorPower);}
-//                while(timer.seconds()>2.4 && timer.seconds()<2.7){intakeMotor.setPower(intakeMotorPower);}
-//            }
-//        }
-//        else if(gamepad2.xWasPressed()){
-//            timer.reset();
-//            while(timer.seconds()<3){
-//                shooterSubsystem.setPowerTo(0.75);
-//                while(timer.seconds()>1.5 && timer.seconds()<1.8){intakeMotor.setPower(intakeMotorPower);}
-//                while(timer.seconds()>2 && timer.seconds()<2.2){intakeMotor.setPower(intakeMotorPower);}
-//                while(timer.seconds()>2.4 && timer.seconds()<2.7){intakeMotor.setPower(intakeMotorPower);}
-//            }
-//        }
-//        else if(gamepad2.right_trigger>0){
-//            shooterSubsystem.setPowerTo(1);
-//        }
-//        else if(gamepad2.left_trigger>0){
-//            shooterSubsystem.setPowerTo(1);
-//        }
-//        else{
-//            shooterSubsystem.stop();
-//        }
-//
-//
 // shooter buttons, 25% power increment at 1.5 seconds
         // switch case inspired by brian
         switch (shooterState){
             case 0:
-                intakeMotor.setPower(0);
                 if(gamepad2.aWasPressed()){
                     shooterMotorPower = 0.5;
                     timer.reset();
@@ -200,20 +168,21 @@ public class CombinedTeleOp extends OpMode {
                 break;
             case 1:
                 double time = timer.seconds();
-                shooterSubsystem.setPowerTo(shooterMotorPower);
-                if ((time>1.5 && time< 1.8)||(time>2.0 && time<2.2)||(time>2.4 && time<2.7)) {
+                shooterSubsystem.revToRPM(5000);
+                if ((time>2 && time< 2.2)||(time>2.3 && time<2.5)||(time>2.6 && time<2.8)) {
                     intakeMotor.setPower(intakeMotorPower);
                 } else {
                     intakeMotor.setPower(0);
                 }
 
-                if(time>3.0){
+                if(time>5.0){
                     shooterSubsystem.stop();
                     intakeMotor.setPower(0);
                     shooterState=0;
                 }
                 break;
         }
+
 
 
 
