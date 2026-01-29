@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
-public class ScoreManyPreloadsRed extends OpMode {
+public class ScoreAbout9PreloadsRed extends OpMode {
     private DcMotorEx shooterMotor1;
 
     private DcMotorEx shooterMotor2;
@@ -33,13 +33,19 @@ public class ScoreManyPreloadsRed extends OpMode {
 
 
     private final Pose startPose = new Pose(86, 8, Math.toRadians(90));
-    private final Pose scorePose = new Pose(72,82,Math.toRadians(45));
-    private final Pose prepareIntakePose1 = new Pose(56,38,Math.toRadians(180));
-    private final Pose intakePose1 = new Pose(22,36,Math.toRadians(180));
+    private final Pose scorePose = new Pose(72,82,Math.toRadians(225));
+    private final Pose prepareIntakePose1 = new Pose(56,36,Math.toRadians(180));
+    private final Pose intakePose1 = new Pose(22,36, Math.toRadians(180));
+    private final Pose prepareIntakePose2 = new Pose(56,60, Math.toRadians(180));
+    private final Pose intakePose2 = new Pose(22,60, Math.toRadians(180));
+
     private final Pose endPose = new Pose(84, 55, Math.toRadians(0));
     private Path scorePreload;
     private Path pickUpPosition1;
     private Path pickup1;
+    private Path pickUpPosition2;
+    private Path pickup2;
+    private Path endAuton;
     //private PathChain grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3;
 
     public void buildPaths() {
@@ -53,6 +59,16 @@ public class ScoreManyPreloadsRed extends OpMode {
         pickup1 = new Path(new BezierLine(prepareIntakePose1, intakePose1));
         pickup1.setLinearHeadingInterpolation(prepareIntakePose1.getHeading(), intakePose1.getHeading());
 
+        pickUpPosition2 = new Path(new BezierLine(scorePose, prepareIntakePose2));
+        pickUpPosition2.setLinearHeadingInterpolation(scorePose.getHeading(), prepareIntakePose2.getHeading());
+
+        pickup2 = new Path(new BezierLine(prepareIntakePose2, intakePose2));
+        pickup2.setLinearHeadingInterpolation(prepareIntakePose2.getHeading(), intakePose2.getHeading());
+
+
+        endAuton = new Path(new BezierLine(scorePose, endPose));
+        endAuton.setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading());
+
 
         /* Here is an example for Constant Interpolation
         scorePreload.setConstantInterpolation(startPose.getHeading()); */
@@ -60,30 +76,65 @@ public class ScoreManyPreloadsRed extends OpMode {
 
     public void autonomousPathUpdate() {
         shooterSubsystem.setPowerTo(0.8);
+        //score cycle 0
         follower.followPath(scorePreload);
         if(!follower.isBusy()) {
             scorePreloads();
         }
+
+        //score cycle 1
         follower.followPath(pickUpPosition1);
         if(!follower.isBusy()) {
             follower.followPath(pickup1);
         }
+        follower.followPath(scorePreload);
+        if(!follower.isBusy()) {
+            scorePreloads();
+        }
+
+        //score cycle 2
+        follower.followPath(pickUpPosition2);
+        if(!follower.isBusy()) {
+            follower.followPath(pickup2);
+        }
+        follower.followPath(scorePreload);
+        if(!follower.isBusy()) {
+            scorePreloads();
+        }
+
+        follower.followPath(endAuton);
     }
 
     /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
 
     public void scorePreloads() {
-        actionTimer.resetTimer();
-        shooterSubsystem.setPowerTo(1);
-        while (actionTimer.getElapsedTimeSeconds() < 2) {
+        switch(pathState){
+            case 0:
+                if (!follower.isBusy()) {
+                    actionTimer.resetTimer();
+                    pathState = 1;
+                }
+            break;
+            case 1:
+                shooterSubsystem.setPowerTo(0.8);
+                if (actionTimer.getElapsedTimeSeconds() > 1) {
+                    actionTimer.resetTimer();
+                    pathState = 2;
+                }
+                break;
 
+            case 2:
+                double time = actionTimer.getElapsedTimeSeconds();
+                if (time<0.1 || (0.3<time && time<0.4) || (0.6<time &&time<0.7)){
+                    intakeMotor.setPower(-0.6);
+                }
+                if(time>0.8){
+                    intakeMotor.setPower(0);
+                    pathState = 0;
+                }
+                break;
         }
-        for(int i=0; i<3;i++){
-            intakeMotor.setPower(0.8);
-            while (actionTimer.getElapsedTimeSeconds() < 0.1) {
 
-            }
-        }
     }
 
     /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
