@@ -18,13 +18,6 @@ public class ShooterSubsystem {
     public ShooterSubsystem (DcMotorEx shooterMotor1, DcMotorEx shooterMotor2) {
         this.shooterMotor1 = shooterMotor1;
         this.shooterMotor2 = shooterMotor2;
-        shooterMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        shooterMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //this.shooterMotor.setMode(Dc);
     }
 

@@ -59,7 +59,6 @@ public class ScorePreloadsRed extends OpMode {
     public void scorePreloads() {
         switch (pathState) {
             case 0:
-                shooterSubsystem.setPowerTo(0.8);
                 follower.followPath(scorePreload);
                 pathState = 1;
                 break;
@@ -81,10 +80,10 @@ public class ScorePreloadsRed extends OpMode {
 
             case 3:
                 double time = actionTimer.getElapsedTimeSeconds();
-                if (time<0.1 || (0.2<time && time<0.3) || (0.4<time &&time<0.5)){
-                    intakeMotor.setPower(0.6);
+                if (time<0.1 || (0.3<time && time<0.4) || (0.6<time &&time<0.7)){
+                    intakeMotor.setPower(-0.6);
                 }
-                if(time>0.6){
+                if(time>0.8){
                     intakeMotor.setPower(0);
                     follower.followPath(leaveShootingZone);
                     pathState = 4;
