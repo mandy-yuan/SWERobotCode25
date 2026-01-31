@@ -33,7 +33,7 @@ public class ScorePreloadsRed extends OpMode {
 
 
     private final Pose startPose = new Pose(86, 8, Math.toRadians(90));
-    private final Pose scorePose = new Pose(72,82,Math.toRadians(225));
+    private final Pose scorePose = new Pose(72,82,Math.toRadians(217));
     private final Pose endPose = new Pose(84, 55, Math.toRadians(0));
     private Path scorePreload;
     private Path leaveShootingZone;
@@ -71,8 +71,8 @@ public class ScorePreloadsRed extends OpMode {
                 break;
 
             case 2:
-                shooterSubsystem.setPowerTo(0.8);
-                if (actionTimer.getElapsedTimeSeconds() > 1) {
+                shooterSubsystem.setPowerTo(0.85);
+                if (actionTimer.getElapsedTimeSeconds() > 1.2) {
                     actionTimer.resetTimer();
                     pathState = 3;
                 }
@@ -80,11 +80,15 @@ public class ScorePreloadsRed extends OpMode {
 
             case 3:
                 double time = actionTimer.getElapsedTimeSeconds();
-                if (time<0.1 || (0.3<time && time<0.4) || (0.6<time &&time<0.7)){
-                    intakeMotor.setPower(-0.6);
+                if (time<0.1 || (0.3<time && time<0.45) || (0.85<time &&time<1.05)){
+                    intakeMotor.setPower(-0.8);
                 }
-                if(time>0.8){
+                else{
                     intakeMotor.setPower(0);
+                }
+                if(time>3){
+                    intakeMotor.setPower(0);
+                    shooterSubsystem.setPowerTo(0);
                     follower.followPath(leaveShootingZone);
                     pathState = 4;
                 }

@@ -83,28 +83,28 @@ public class CombinedTeleOp extends OpMode {
             follower.setPose(new Pose(follower.getPose().getX(), follower.getPose().getY(), 180));
         }
 
-        //Shooting setpoints (far/small triangle and close/large triangle)
-        if (gamepad1.xWasPressed() && !automatedDrive) {
-            automatedDrive = true;
-            driveToNearBlue();
-        }
-        else if (gamepad1.yWasPressed()&&!automatedDrive) {
-            automatedDrive = true;
-            driveToNearRed();
-        }
-        else if (gamepad1.right_trigger>0&&!automatedDrive){
-            automatedDrive = true;
-            driveToFarBlue();
-        }
-        else if (gamepad1.right_bumper&&!automatedDrive){
-            automatedDrive = true;
-            driveToFarRed();
-        }
-
-        if (automatedDrive && !follower.isBusy()) {
-            automatedDrive = false;
-            follower.startTeleopDrive();
-        }
+//        //Shooting setpoints (far/small triangle and close/large triangle)
+//        if (gamepad1.xWasPressed() && !automatedDrive) {
+//            automatedDrive = true;
+//            driveToNearBlue();
+//        }
+//        else if (gamepad1.yWasPressed()&&!automatedDrive) {
+//            automatedDrive = true;
+//            driveToNearRed();
+//        }
+//        else if (gamepad1.right_trigger>0&&!automatedDrive){
+//            automatedDrive = true;
+//            driveToFarBlue();
+//        }
+//        else if (gamepad1.right_bumper&&!automatedDrive){
+//            automatedDrive = true;
+//            driveToFarRed();
+//        }
+//
+//        if (automatedDrive && !follower.isBusy()) {
+//            automatedDrive = false;
+//            follower.startTeleopDrive();
+//        }
 
         //Normal Teleop driving
         if (!automatedDrive) {
@@ -128,7 +128,7 @@ public class CombinedTeleOp extends OpMode {
         //Operator controls
         //manual shooter
         if(gamepad2.right_trigger>0){
-            shooterSubsystem.setPowerTo(1);
+            shooterSubsystem.setPowerTo(0.8);
         }
         else{
             shooterSubsystem.setPowerTo(0);
@@ -139,7 +139,7 @@ public class CombinedTeleOp extends OpMode {
         if (gamepad2.left_bumper) {
             intakeMotor.setPower(intakeMotorPower);
         } else if(gamepad2.right_bumper){
-            intakeMotor.setPower(0.6);
+            intakeMotor.setPower(0.4);
         }
         else {
             intakeMotor.setPower(0);
