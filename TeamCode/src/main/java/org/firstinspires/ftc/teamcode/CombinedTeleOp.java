@@ -187,31 +187,6 @@ public class CombinedTeleOp extends OpMode {
 
 
 
-//        //Automated PathFollowing
-//        if (gamepad1.aWasPressed()) {
-//            follower.followPath(pathChain.get());
-//            automatedDrive = true;
-//        }
-//        //Stop automated following if the follower is done
-//        if (automatedDrive && (gamepad1.bWasPressed() || !follower.isBusy())) {
-//            follower.startTeleopDrive();
-//            automatedDrive = false;
-//        }
-
-//        //Slow Mode
-//        if (gamepad1.dpadDownWasPressed()) {
-//            slowMode = !slowMode;
-//        }
-//
-//        //Optional way to change slow mode strength
-//        if (gamepad1.xWasPressed()) {
-//            slowModeMultiplier += 0.25;
-//        }
-//
-//        //Optional way to change slow mode strength
-//        if (gamepad2.yWasPressed()) {
-//            slowModeMultiplier -= 0.25;
-//        }
 
         telemetryM.debug("position", follower.getPose());
         telemetryM.debug("velocity", follower.getVelocity());

@@ -10,10 +10,11 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
-public class Score6Red extends OpMode {
+public class Score6Blue extends OpMode {
     private DcMotorEx shooterMotor1;
     private DcMotorEx shooterMotor2;
     private DcMotorEx intakeMotor;
@@ -23,7 +24,7 @@ public class Score6Red extends OpMode {
     private int actionState;
     private ShooterSubsystem shooterSubsystem;
 
-    private final Pose startPose = new Pose(56, 8, Math.toRadians(90));
+    private final Pose startPose = new Pose(86, 8, Math.toRadians(90));
     private final Pose scorePose = new Pose(72,82,Math.toRadians(225));
     private final Pose prepareIntakePose1 = new Pose(96,60, Math.toRadians(0));
     private final Pose pickUpPose1 = new Pose(130,60, Math.toRadians(0));
@@ -42,22 +43,22 @@ public class Score6Red extends OpMode {
 
         //cycle 1
         score1 = follower.pathBuilder().addPath(
-                new BezierCurve(
-                        new Pose(72.000, 82.000),
-                        new Pose(58.160, 59.070),
-                        new Pose(40.000, 60.000)
-                )
+                        new BezierCurve(
+                                scorePose,
+                                new Pose(80.660, 60.330),
+                                new Pose(104.220, 59.580)
+                        )
                 ).setLinearHeadingInterpolation(Math.toRadians(225), Math.toRadians(0))
-
-                .addPath(new BezierLine(
-                                new Pose(40.000, 60.000),
-                                new Pose(15.000, 60.000)
+                .addPath(
+                        new BezierLine(
+                                new Pose(104.220, 59.580),
+                                new Pose(123.000, 59.660)
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                 .addPath(
                         new BezierLine(
-                                new Pose(15.000, 60.000),
-                                new Pose(72.000, 82.000)
+                                new Pose(123.000, 59.660),
+                                scorePose
                         )
                 ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(225))
                 .build();
@@ -73,7 +74,7 @@ public class Score6Red extends OpMode {
                 shootBalls(2);
                 break;
             case 2: //pickup balls 1
-                if(!follower.isBusy()) {
+                if(!follower.isBusy() && pathTimer.getElapsedTimeSeconds() > 0.1) {
                     intakeMotor.setPower(-0.6);
                     follower.followPath(score1);
                     setPathState(3);
@@ -86,7 +87,7 @@ public class Score6Red extends OpMode {
                 shootBalls(5);
                 break;
             case 5: //go to end position
-                if(!follower.isBusy()) {
+                if(!follower.isBusy() && pathTimer.getElapsedTimeSeconds() > 0.1) {
                     follower.followPath(endAuton);
                     setPathState(-1);
                 }
@@ -103,7 +104,7 @@ public class Score6Red extends OpMode {
         }
     }
     private void adjustBalls(int nextState){
-        if (!follower.isBusy()) {
+        if (!follower.isBusy() && pathTimer.getElapsedTimeSeconds() > 0.1) {
             if (pathTimer.getElapsedTimeSeconds() < 0.2) {
                 intakeMotor.setPower(0.4);
             } else {
